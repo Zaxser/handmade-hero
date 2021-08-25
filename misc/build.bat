@@ -6,6 +6,7 @@ rem can be called from anywhere and still work.
 rmdir /Q /S "%~dp0..\build\"
 mkdir "%~dp0..\build"
 pushd "%~dp0..\build"
+echo * > .gitignore
 cl -FC -Zi ..\code\win32_handmade.cpp user32.lib gdi32.lib
 popd
 
