@@ -21,7 +21,16 @@ global_variable BITMAPINFO bitmapInfo;
 global_variable void *bitmapMemory;
 global_variable int bitmapWidth;
 global_variable int bitmapHeight;
+global_variable int bytesPerPixel = 4;
 
+// internal void renderWeirdGradient(int blueOffset, int greenOffset){
+//   int width = bitmapWidth;
+//   int height = bitmapHeight;
+
+//   int pitch = width * bytesPerPixel;
+//   uint8 *row = (uint8 *)bitmapMemory;
+//   for(int y = 0; y < bitmapHeight; y++)
+// }
 internal void win32ResizeDIBSection(int width, int height){
   if(bitmapMemory){
     VirtualFree(bitmapMemory, 0, MEM_RELEASE);
@@ -45,7 +54,7 @@ internal void win32ResizeDIBSection(int width, int height){
   uint8 *row = (uint8 *)bitmapMemory;
   for(int y = 0; y < bitmapHeight; y++){
     uint8 *pixel = (uint8 *)row;
-    for(int x = 0; y < bitmapWidth; x++){
+    for(int x = 0; x < bitmapWidth; x++){
       // Pixel in Memory :
       *pixel = 255;
       *pixel++;
