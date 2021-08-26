@@ -1,5 +1,6 @@
 #include <windows.h>
 #include <stdint.h>
+#include <xinput.h>
 
 #define internal static
 #define local_persist static
@@ -113,6 +114,45 @@ LRESULT CALLBACK win32MainWindowCallback(HWND window,
     case WM_CLOSE:{
       running = false;
     }break;
+    case WM_KEYUP:      // fallthrough
+    case WM_KEYDOWN:    // fallthrough
+    case WM_SYSKEYUP:   // fallthrough
+    case WM_SYSKEYDOWN:{
+      char VKCODE = wParam;
+      bool wasDown = ((lParam & (1 << 30)) != 0);
+      bool isDown = ((lParam & (1 << 31)) != 0);
+      if(VKCODE == 'W'){
+
+      }else if(VKCODE == 'S'){
+
+      }else if(VKCODE == 'A'){
+
+      }else if(VKCODE == 'D'){
+
+      }else if(VKCODE == 'Q'){
+
+      }else if(VKCODE == 'E'){
+
+      }else if(VKCODE == VK_UP){
+
+      }else if(VKCODE == VK_LEFT){
+
+      }else if(VKCODE == VK_DOWN){
+
+      }else if(VKCODE == VK_RIGHT){
+
+      }else if(VKCODE == VK_ESCAPE){
+        OutputDebugStringA("ESCAPE: ");
+        if(isDown){
+          OutputDebugStringA("IsDown ");
+        }
+        if(wasDown){
+          OutputDebugString("WasDown ");
+        }
+      }else if(VKCODE == VK_SPACE){
+
+      }
+    }break;
     case WM_ACTIVATEAPP:{
       OutputDebugString("WM_ACTIVATEAPP\n");
     }break;
@@ -148,7 +188,7 @@ int CALLBACK WinMain(HINSTANCE instance,
                      HINSTANCE prevInstance,
                      LPSTR commandLine,
                      int showCode){
-  WNDCLASS WindowClass = {};
+  WNDCLASSA WindowClass = {};
 
   win32ResizeDIBSection(&globalBackbuffer, 1280, 720);
 
