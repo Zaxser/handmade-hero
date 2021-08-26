@@ -158,16 +158,17 @@ int CALLBACK WinMain(HINSTANCE instance,
       0
     );
     if(WindowHandle){
-      MSG message;
       running = true;
       while(running){
-        BOOL messageResult = GetMessage(&message, 0, 0, 0);
-        if(messageResult > 0){
+        MSG message;
+        while(PeekMessage(&message, 0, 0, 0, PM_REMOVE)){
+          if(message.message == WM_QUIT || message.message == WM_CLOSE){
+            running = false;
+          }
           TranslateMessage(&message);
-          DispatchMessage(&message);
-        }else{
-          break;
+          DispatchMessageA(&message);
         }
+
       }
     }else{
 
