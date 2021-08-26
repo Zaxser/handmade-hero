@@ -27,20 +27,13 @@ internal void renderWeirdGradient(int xOffset, int yOffset){
   int pitch = bitmapWidth * bytesPerPixel;
   uint8 *row = (uint8 *)bitmapMemory;
   for(int y = 0; y < bitmapHeight; y++){
-    uint8 *pixel = (uint8 *)row;
+    uint32 *pixel = (uint32 *)row;
     for(int x = 0; x < bitmapWidth; x++){
       // Pixel in Memory :
-      *pixel = (uint8)(x + xOffset);
-      *pixel++;
-
-      *pixel = (uint8)(y + yOffset);
-      *pixel++;
-
-      *pixel = 0;
-      *pixel++;
-
-      *pixel = 0;
-      *pixel++;
+      uint8 blue = (x + xOffset);
+      uint8 green = (y + yOffset);
+      
+      *pixel++ = (green << 8 | blue);
     }
     row += pitch;
   }
