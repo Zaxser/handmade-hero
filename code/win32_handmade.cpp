@@ -44,20 +44,20 @@ win32GetWindowDimension(HWND window){
 }
 
 internal void 
-renderWeirdGradient(Win32_Offscreen_Buffer buffer, 
+renderWeirdGradient(Win32_Offscreen_Buffer *buffer, 
                     int xOffset, 
                     int yOffset){
-  uint8 *row = (uint8 *)buffer.memory;
-  for(int y = 0; y < buffer.height; y++){
+  uint8 *row = (uint8 *)buffer->memory;
+  for(int y = 0; y < buffer->height; y++){
     uint32 *pixel = (uint32 *)row;
-    for(int x = 0; x < buffer.width; x++){
+    for(int x = 0; x < buffer->width; x++){
       // Pixel in Memory :
       uint8 blue = (x + xOffset);
       uint8 green = (y + yOffset);
       
       *pixel++ = (green << 8 | blue);
     }
-    row += buffer.pitch;
+    row += buffer->pitch;
   }
 }
 
@@ -89,16 +89,16 @@ internal void
 win32DisplayBufferInWindow(HDC deviceContext, 
                            int windowWidth,
                            int windowHeight,
-                           Win32_Offscreen_Buffer buffer,
+                           Win32_Offscreen_Buffer *buffer,
                            int x, 
                            int y, 
                            int width, 
                            int height){
   StretchDIBits(deviceContext,
                 0, 0, windowWidth, windowHeight,
-                0, 0, buffer.width, buffer.height,
-                buffer.memory,
-                &buffer.info,
+                0, 0, buffer->width, buffer->height,
+                buffer->memory,
+                &buffer->info,
                 DIB_RGB_COLORS, SRCCOPY);
 }
 
@@ -168,7 +168,7 @@ LRESULT CALLBACK win32MainWindowCallback(HWND window,
       win32DisplayBufferInWindow(deviceContext, 
                                  dimension.width,
                                  dimension.height,
-                                 globalBackbuffer,
+                                 &globalBackbuffer,
                                  x, 
                                  y, 
                                  width, 
@@ -230,12 +230,12 @@ int CALLBACK WinMain(HINSTANCE instance,
         }
 
         HDC deviceContext = GetDC(window);
-        renderWeirdGradient(globalBackbuffer, x, y);
+        renderWeirdGradient(&globalBackbuffer, x, y);
         Win32_Window_Dimension dimension = win32GetWindowDimension(window);
         win32DisplayBufferInWindow(deviceContext, 
                                    dimension.width,
                                    dimension.height,
-                                   globalBackbuffer, 
+                                   &globalBackbuffer, 
                                    0, 
                                    0, 
                                    dimension.width,
