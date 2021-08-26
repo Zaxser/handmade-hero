@@ -143,7 +143,7 @@ int CALLBACK WinMain(HINSTANCE instance,
   WindowClass.lpszClassName = "HandmadeHeroWindowClass";
   
   if(RegisterClass(&WindowClass)){
-    HWND WindowHandle = CreateWindowEx(
+    HWND window = CreateWindowEx(
       0,
       WindowClass.lpszClassName,
       "Handmade Hero",
@@ -157,10 +157,15 @@ int CALLBACK WinMain(HINSTANCE instance,
       instance,
       0
     );
-    if(WindowHandle){
+
+    if(window){
       running = true;
+      int x = 0;
+      int y = 0;
       while(running){
         MSG message;
+        x++;
+        y++;
         while(PeekMessage(&message, 0, 0, 0, PM_REMOVE)){
           if(message.message == WM_QUIT || message.message == WM_CLOSE){
             running = false;
@@ -169,6 +174,13 @@ int CALLBACK WinMain(HINSTANCE instance,
           DispatchMessageA(&message);
         }
 
+        renderWeirdGradient(x, y);
+        HDC deviceContext = GetDC(window);
+        RECT clientRect;
+        GetClientRect(window, &clientRect);
+        int windowWidth = clientRect.right - clientRect.left;
+        int windowHeight = clientRect.bottom - clientRect.top;
+        win32UpdateWindow(deviceContext, &clientRect, 0, 0, windowWidth, windowHeight);
       }
     }else{
 
