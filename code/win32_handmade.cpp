@@ -94,8 +94,8 @@ win32DisplayBufferInWindow(HDC deviceContext,
                            int width, 
                            int height){
   StretchDIBits(deviceContext,
-                0, 0, buffer.width, buffer.height,
                 0, 0, windowWidth, windowHeight,
+                0, 0, buffer.width, buffer.height,
                 buffer.memory,
                 &buffer.info,
                 DIB_RGB_COLORS, SRCCOPY);
@@ -108,10 +108,6 @@ LRESULT CALLBACK win32MainWindowCallback(HWND window,
   LRESULT result = 0;
   switch(message){
     case WM_SIZE:{
-      Win32_Window_Dimension dimension = win32GetWindowDimension(window);
-      win32ResizeDIBSection(&globalBackbuffer, 
-                            dimension.width, 
-                            dimension.height);
       OutputDebugString("WM_SIZE\n");
     }break;
     case WM_DESTROY:{
@@ -156,6 +152,8 @@ int CALLBACK WinMain(HINSTANCE instance,
                      LPSTR commandLine,
                      int showCode){
   WNDCLASS WindowClass = {};
+
+  win32ResizeDIBSection(&globalBackbuffer, 1280, 720);
 
   WindowClass.style = CS_HREDRAW|CS_VREDRAW;
   WindowClass.lpfnWndProc = win32MainWindowCallback;
