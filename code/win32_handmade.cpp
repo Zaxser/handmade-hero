@@ -107,9 +107,6 @@ LRESULT CALLBACK win32MainWindowCallback(HWND window,
                                          LPARAM lParam){
   LRESULT result = 0;
   switch(message){
-    case WM_SIZE:{
-      OutputDebugString("WM_SIZE\n");
-    }break;
     case WM_DESTROY:{
       running = false;
     }break;
