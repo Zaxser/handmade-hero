@@ -24,8 +24,23 @@ struct Win32_Offscreen_Buffer {
   int pitch;
 };
 
+struct Win32_Window_Dimension {
+  int width;
+  int height;
+};
+
 global_variable BOOL running;
 global_variable Win32_Offscreen_Buffer globalBackbuffer;
+
+Win32_Window_Dimension
+win32GetWindowDimension(HWND window){
+  Win32_Window_Dimension result;
+  RECT clientRect;
+  GetClientRect(window, &clientRect);
+  result.width = clientRect.right - clientRect.left;
+  result.height = clientRect.bottom - clientRect.top;
+  return result;
+}
 
 internal void 
 renderWeirdGradient(Win32_Offscreen_Buffer buffer, 
@@ -71,15 +86,13 @@ win32ResizeDIBSection(Win32_Offscreen_Buffer *buffer, int width, int height){
 
 internal void 
 win32DisplayBufferInWindow(HDC deviceContext, 
-                           RECT clientRect,
+                           int windowWidth,
+                           int windowHeight,
                            Win32_Offscreen_Buffer buffer,
                            int x, 
                            int y, 
                            int width, 
                            int height){
-  int windowWidth = clientRect.right - clientRect.left;
-  int windowHeight = clientRect.bottom - clientRect.top;
-
   StretchDIBits(deviceContext,
                 0, 0, buffer.width, buffer.height,
                 0, 0, windowWidth, windowHeight,
@@ -87,6 +100,7 @@ win32DisplayBufferInWindow(HDC deviceContext,
                 &buffer.info,
                 DIB_RGB_COLORS, SRCCOPY);
 }
+
 LRESULT CALLBACK win32MainWindowCallback(HWND window,
                                          UINT message,
                                          WPARAM wParam,
@@ -94,11 +108,10 @@ LRESULT CALLBACK win32MainWindowCallback(HWND window,
   LRESULT result = 0;
   switch(message){
     case WM_SIZE:{
-      RECT clientRect;
-      GetClientRect(window, &clientRect);
-      int width = clientRect.right - clientRect.left;
-      int height = clientRect.bottom - clientRect.top;
-      win32ResizeDIBSection(&globalBackbuffer, width, height);
+      Win32_Window_Dimension dimension = win32GetWindowDimension(window);
+      win32ResizeDIBSection(&globalBackbuffer, 
+                            dimension.width, 
+                            dimension.height);
       OutputDebugString("WM_SIZE\n");
     }break;
     case WM_DESTROY:{
@@ -118,11 +131,10 @@ LRESULT CALLBACK win32MainWindowCallback(HWND window,
       int width = paint.rcPaint.right - paint.rcPaint.left;
       int height = paint.rcPaint.bottom - paint.rcPaint.top;
 
-      RECT clientRect;
-      GetClientRect(window, &clientRect);
-
+      Win32_Window_Dimension dimension = win32GetWindowDimension(window);
       win32DisplayBufferInWindow(deviceContext, 
-                                 clientRect,
+                                 dimension.width,
+                                 dimension.height,
                                  globalBackbuffer,
                                  x, 
                                  y, 
@@ -182,14 +194,17 @@ int CALLBACK WinMain(HINSTANCE instance,
           DispatchMessageA(&message);
         }
 
-        renderWeirdGradient(globalBackbuffer, x, y);
         HDC deviceContext = GetDC(window);
-        RECT clientRect;
-        GetClientRect(window, &clientRect);
-        int windowWidth = clientRect.right - clientRect.left;
-        int windowHeight = clientRect.bottom - clientRect.top;
-        win32DisplayBufferInWindow(deviceContext, clientRect, globalBackbuffer, 0, 0, windowWidth, windowHeight);
-
+        renderWeirdGradient(globalBackbuffer, x, y);
+        Win32_Window_Dimension dimension = win32GetWindowDimension(window);
+        win32DisplayBufferInWindow(deviceContext, 
+                                   dimension.width,
+                                   dimension.height,
+                                   globalBackbuffer, 
+                                   0, 
+                                   0, 
+                                   dimension.width,
+                                   dimension.height);
         x++;
         y++;
       }
