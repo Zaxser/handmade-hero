@@ -2,7 +2,7 @@ call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary
 rem This is just the path of vcvarsall on my machine. Your mileage may vary.
 
 rem %~dp0 resolves to the path of build.bat; this makes it so that build.bat can
-rem can be called from anywhere and still work.
+rem be called from anywhere and still work.
 rmdir /Q /S "%~dp0..\build\"
 mkdir "%~dp0..\build"
 pushd "%~dp0..\build"

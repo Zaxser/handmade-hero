@@ -23,14 +23,29 @@ global_variable int bitmapWidth;
 global_variable int bitmapHeight;
 global_variable int bytesPerPixel = 4;
 
-// internal void renderWeirdGradient(int blueOffset, int greenOffset){
-//   int width = bitmapWidth;
-//   int height = bitmapHeight;
+internal void renderWeirdGradient(int xOffset, int yOffset){
+  int pitch = bitmapWidth * bytesPerPixel;
+  uint8 *row = (uint8 *)bitmapMemory;
+  for(int y = 0; y < bitmapHeight; y++){
+    uint8 *pixel = (uint8 *)row;
+    for(int x = 0; x < bitmapWidth; x++){
+      // Pixel in Memory :
+      *pixel = (uint8)(x + xOffset);
+      *pixel++;
 
-//   int pitch = width * bytesPerPixel;
-//   uint8 *row = (uint8 *)bitmapMemory;
-//   for(int y = 0; y < bitmapHeight; y++)
-// }
+      *pixel = (uint8)(y + yOffset);
+      *pixel++;
+
+      *pixel = 0;
+      *pixel++;
+
+      *pixel = 0;
+      *pixel++;
+    }
+    row += pitch;
+  }
+}
+
 internal void win32ResizeDIBSection(int width, int height){
   if(bitmapMemory){
     VirtualFree(bitmapMemory, 0, MEM_RELEASE);
@@ -50,26 +65,7 @@ internal void win32ResizeDIBSection(int width, int height){
   int bitMapMemorySize = width * height * bytesPerPixel;
   bitmapMemory = VirtualAlloc(0, bitMapMemorySize, MEM_COMMIT, PAGE_READWRITE);
   
-  int pitch = width * bytesPerPixel;
-  uint8 *row = (uint8 *)bitmapMemory;
-  for(int y = 0; y < bitmapHeight; y++){
-    uint8 *pixel = (uint8 *)row;
-    for(int x = 0; x < bitmapWidth; x++){
-      // Pixel in Memory :
-      *pixel = 255;
-      *pixel++;
-
-      *pixel = 0;
-      *pixel++;
-
-      *pixel = 0;
-      *pixel++;
-
-      *pixel = 0;
-      *pixel++;
-    }
-    row += pitch;
-  }
+  renderWeirdGradient(1, 1);
 }
 
 internal void 
