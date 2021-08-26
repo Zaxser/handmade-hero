@@ -129,7 +129,7 @@ int CALLBACK WinMain(HINSTANCE instance,
                      int showCode){
   WNDCLASS WindowClass = {};
 
-  WindowClass.style = CS_OWNDC|CS_HREDRAW|CS_VREDRAW;
+  WindowClass.style = CS_HREDRAW|CS_VREDRAW;
   WindowClass.lpfnWndProc = win32MainWindowCallback;
   WindowClass.hInstance = instance;
   // WindowClass.hIcon;
