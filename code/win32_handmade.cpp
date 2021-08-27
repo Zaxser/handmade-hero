@@ -121,36 +121,43 @@ LRESULT CALLBACK win32MainWindowCallback(HWND window,
       char VKCODE = wParam;
       bool wasDown = ((lParam & (1 << 30)) != 0);
       bool isDown = ((lParam & (1 << 31)) != 0);
-      if(VKCODE == 'W'){
+      if(wasDown != isDown){
+        if(VKCODE == 'W'){
 
-      }else if(VKCODE == 'S'){
+        }else if(VKCODE == 'S'){
 
-      }else if(VKCODE == 'A'){
+        }else if(VKCODE == 'A'){
 
-      }else if(VKCODE == 'D'){
+        }else if(VKCODE == 'D'){
 
-      }else if(VKCODE == 'Q'){
+        }else if(VKCODE == 'Q'){
 
-      }else if(VKCODE == 'E'){
+        }else if(VKCODE == 'E'){
 
-      }else if(VKCODE == VK_UP){
+        }else if(VKCODE == VK_UP){
 
-      }else if(VKCODE == VK_LEFT){
+        }else if(VKCODE == VK_LEFT){
 
-      }else if(VKCODE == VK_DOWN){
+        }else if(VKCODE == VK_DOWN){
 
-      }else if(VKCODE == VK_RIGHT){
+        }else if(VKCODE == VK_RIGHT){
 
-      }else if(VKCODE == VK_ESCAPE){
-        OutputDebugStringA("ESCAPE: ");
-        if(isDown){
-          OutputDebugStringA("IsDown ");
+        }else if(VKCODE == VK_ESCAPE){
+          OutputDebugStringA("ESCAPE: ");
+          if(isDown){
+            OutputDebugStringA("IsDown ");
+          }
+          if(wasDown){
+            OutputDebugString("WasDown ");
+          }
+        }else if(VKCODE == VK_SPACE){
+
         }
-        if(wasDown){
-          OutputDebugString("WasDown ");
-        }
-      }else if(VKCODE == VK_SPACE){
+      }
 
+      bool altKeyWasDown = ((lParam & (1 << 29)) != 0);
+      if((VKCODE == VK_F4) && altKeyWasDown){
+        running = false;
       }
     }break;
     case WM_ACTIVATEAPP:{
