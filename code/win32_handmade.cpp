@@ -57,11 +57,11 @@ win32InitSound(HWND window, int32 samplesPerSecond, int32 bufferSize){
       waveFormat.wFormatTag = WAVE_FORMAT_PCM;
       waveFormat.nChannels = 2; // Stereo
       waveFormat.nSamplesPerSec = samplesPerSecond;
-      waveFormat.nAvgBytesPerSec= 
-        waveFormat.nSamplesPerSec * waveFormat.nBlockAlign;
       waveFormat.wBitsPerSample = 16;
       waveFormat.nBlockAlign = 
         (waveFormat.nChannels * waveFormat.wBitsPerSample) / 8;
+      waveFormat.nAvgBytesPerSec= 
+        waveFormat.nSamplesPerSec * waveFormat.nBlockAlign;
       waveFormat.cbSize = 0;
 
       if(SUCCEEDED(DirectSound->SetCooperativeLevel(window, DSSCL_PRIORITY))){
@@ -290,10 +290,10 @@ int CALLBACK WinMain(HINSTANCE instance,
       int y = 0;
 
       win32InitSound(window, 48000, 48000 * sizeof(int16) * 2);
-
+      HDC deviceContext = GetDC(window);
       running = true;
+      MSG message;
       while(running){
-        MSG message;
 
         while(PeekMessage(&message, 0, 0, 0, PM_REMOVE)){
           if(message.message == WM_QUIT || message.message == WM_CLOSE){
@@ -303,7 +303,6 @@ int CALLBACK WinMain(HINSTANCE instance,
           DispatchMessageA(&message);
         }
 
-        HDC deviceContext = GetDC(window);
         renderWeirdGradient(&globalBackbuffer, x, y);
         Win32_Window_Dimension dimension = win32GetWindowDimension(window);
         win32DisplayBufferInWindow(deviceContext, 
