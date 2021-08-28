@@ -143,7 +143,7 @@ win32ResizeDIBSection(Win32_Offscreen_Buffer *buffer, int width, int height){
 
   buffer->bytesPerPixel = 4;
   int bitMapSize = buffer->width * buffer->height * buffer->bytesPerPixel;
-  buffer->memory = VirtualAlloc(0, bitMapSize, MEM_COMMIT, PAGE_READWRITE);
+  buffer->memory = VirtualAlloc(0, bitMapSize, MEM_RESERVE|MEM_COMMIT, PAGE_READWRITE);
   
   buffer->pitch = buffer->width * buffer->bytesPerPixel;
   //renderWeirdGradient(1, 1);
@@ -288,10 +288,10 @@ int CALLBACK WinMain(HINSTANCE instance,
     if(window){
       int x = 0;
       int y = 0;
-
-      win32InitSound(window, 48000, 48000 * sizeof(int16) * 2);
-      HDC deviceContext = GetDC(window);
       running = true;
+
+      HDC deviceContext = GetDC(window);
+      win32InitSound(window, 48000, 48000 * sizeof(int16) * 2);
       MSG message;
       while(running){
 
